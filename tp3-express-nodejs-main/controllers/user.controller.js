@@ -2,7 +2,8 @@ import bcrypt from 'bcrypt'
 import { User } from '../models/user.model.js'
 
 const getAllUsers = (req, res) => {
-    req.status(500).json({
+    console.log("hello")
+    res.status(500).json({
         status: 'error',
         message: 'This route is not yet implemented'
     })
@@ -14,6 +15,7 @@ const signup = async (req, res) => {
 
         //non implémenter pour le moment, il faut faire l'auth
         if (role === 'admin'){
+            console.log('passe')
             if (!req.user || req.user.role !== 'admin') {
                 return res.status(403).json({
                     status: 'fail',
@@ -22,11 +24,13 @@ const signup = async (req, res) => {
             }
         }
         const hashedPassword = await bcrypt.hash(password, 10)
+        console.log(password)
+        console.log(hashedPassword)
 
         const newUser = await User.create({
             name,
             email,
-            hashedPassword,
+            password: hashedPassword,
             role
         })
 
@@ -42,7 +46,7 @@ const signup = async (req, res) => {
             }
         })
     } catch (err){
-        req.status(500).json({
+        res.status(500).json({
             status: 'error',
             message: err.message
         })
@@ -50,21 +54,21 @@ const signup = async (req, res) => {
 }
 
 const getUserById = (req, res) => {
-    req.status(500).json({
+    res.status(500).json({
         status: 'error',
         message: 'This route is not yet implemented'
     })
 }
 
 const updateUser = (req, res) => {
-    req.status(500).json({
+    res.status(500).json({
         status: 'error',
         message: 'This route is not yet implemented'
     })
 }
 
 const connection = (req, res) => {
-    req.status(500).json({
+    res.status(500).json({
         status: 'error',
         message: 'This route is not yet implemented'
     })

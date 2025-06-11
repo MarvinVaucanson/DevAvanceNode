@@ -5,10 +5,9 @@ import util from 'util';
 import { Tour } from './models/tour.model.js'
 //configure l'environnement
 dotenv.config();
-//console.log(process.env.DATABASE)
-const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.PASSWORD)
+console.log(process.env.DATABASE)
 
-const LOCAL_DATABASE = "mongodb+srv://dbUser:<PASSWORD>@cluster0.hu6sxcd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
+const LOCAL_DATABASE = process.env.DATABASE;
 async function connectDB() {
     await mongoose.connect(LOCAL_DATABASE)
 }
