@@ -1,12 +1,11 @@
 import express from 'express'
-import { getAllUsers, updateUser, createUser, getUserById } from '../controllers/user.controller.js'
+import { getAllUsers, updateUser, signup, getUserById, connection } from '../controllers/user.controller.js'
 
 const userRouter = express.Router()
 
 userRouter
     .route('/')
     .get(getAllUsers)
-    .post(createUser)
 
 userRouter
     .route('/:id')
@@ -15,7 +14,7 @@ userRouter
 
 userRouter
     .route('/signup')
-    .post(inscription)
+    .post(signup)
 
 userRouter
     .route('login')

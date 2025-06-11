@@ -4,11 +4,11 @@ import dotenv from 'dotenv';
 import util from 'util';
 import { Tour } from './models/tour.model.js'
 //configure l'environnement
-//dotenv.config();
+dotenv.config();
 //console.log(process.env.DATABASE)
-//const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.PASSWORD)
+const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.PASSWORD)
 
-const LOCAL_DATABASE = "mongodb://localhost:27017/natours"
+const LOCAL_DATABASE = "mongodb+srv://dbUser:<PASSWORD>@cluster0.hu6sxcd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 async function connectDB() {
     await mongoose.connect(LOCAL_DATABASE)
 }
