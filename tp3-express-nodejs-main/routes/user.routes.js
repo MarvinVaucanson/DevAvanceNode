@@ -13,4 +13,12 @@ userRouter
     .get(getUserById)
     .put(updateUser)
 
+userRouter
+    .route('/signup')
+    .post(inscription)
+
+userRouter
+    .route('login')
+    .post(connection)
+
 export { userRouter }
