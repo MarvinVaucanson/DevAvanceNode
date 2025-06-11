@@ -23,6 +23,7 @@ const writeAsync = async () => {
     const fileName = await readFile('txt/start.txt', 'utf-8');
 
     const textIn = await readFile(`./txt/${fileName}.txt`, { encoding: 'utf-8' })
+
     
     const textOut = `Toto This is what we know about ${textIn}. Created on ${new Date().toLocaleDateString()} \n`
     
