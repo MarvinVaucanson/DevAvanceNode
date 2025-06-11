@@ -1,5 +1,5 @@
 import express from 'express'
-import { getAllUsers, updateUser, signup, getUserById, connection } from '../controllers/user.controller.js'
+import { getAllUsers, updateUser, signup, getUserById, connection, createUser } from '../controllers/user.controller.js'
 
 const userRouter = express.Router()
 
@@ -17,7 +17,12 @@ userRouter
     .post(signup)
 
 userRouter
-    .route('login')
+    .route('/login')
     .post(connection)
+
+userRouter
+    .route('/admin')
+    .get(getAllUsers)
+    .post(createUser)
 
 export { userRouter }
