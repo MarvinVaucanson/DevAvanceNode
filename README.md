@@ -9,6 +9,7 @@ DATABASE = "url du cluster atlas mongo db"
 JWT_KEY=pass_phrase
 ```
 - Pour accéder aux routes protégés merci d'ajouter la key généré au login dans l'en-tête Authorization: Bearer <token>
+- Pour run : `npm start`
 ## Liste des routes
 
 | Méthode | URL                        | Accès         | Description                        |
@@ -25,3 +26,4 @@ JWT_KEY=pass_phrase
 ## Contributors 
 
 Baptiste Rousselot
+baptiste.rousselot@etu.univ-lyon1.fr
