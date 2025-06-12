@@ -1,11 +1,12 @@
 import express from 'express'
 import { getAllUsers, updateUser, signup, getUserById, login, createUser, deleteUser } from '../controllers/user.controller.js'
+import { verifyToken } from '../middleware/verifyToken.js'
 
 const userRouter = express.Router()
 
 userRouter
     .route('/')
-    .get(getAllUsers)
+    .get(verifyToken,getAllUsers)
 
 userRouter
     .route('/signup')
@@ -17,13 +18,13 @@ userRouter
 
 userRouter
     .route('/admin')
-    .get(getAllUsers)
-    .post(createUser)
+    .get(verifyToken,getAllUsers)
+    .post(verifyToken,createUser)
 
-    userRouter
+userRouter
     .route('/admin/:id')
-    .get(getUserById)
-    .put(updateUser)
-    .delete(deleteUser)
+    .get(verifyToken,getUserById)
+    .put(verifyToken,updateUser)
+    .delete(verifyToken,deleteUser)
 
 export { userRouter }
