@@ -1,16 +1,11 @@
 import express from 'express'
-import { getAllUsers, updateUser, signup, getUserById, connection, createUser } from '../controllers/user.controller.js'
+import { getAllUsers, updateUser, signup, getUserById, connection, createUser, deleteUser } from '../controllers/user.controller.js'
 
 const userRouter = express.Router()
 
 userRouter
     .route('/')
     .get(getAllUsers)
-
-userRouter
-    .route('/:id')
-    .get(getUserById)
-    .put(updateUser)
 
 userRouter
     .route('/signup')
@@ -25,4 +20,10 @@ userRouter
     .get(getAllUsers)
     .post(createUser)
 
+    userRouter
+    .route('/admin/:id')
+    .get(getUserById)
+    .put(updateUser)
+    .delete(deleteUser)
+    
 export { userRouter }

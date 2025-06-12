@@ -98,19 +98,104 @@ const getAllUsers = async (req, res) => {
         })
     }
 }
+const getUserById = async (req, res) => {
+    try{
+        //à remplacer
+        const current = "admin"
+        if (current !== 'admin') {
+            return res.status(403).json({
+                status: 'fail',
+                message: 'Accès réservé à admin'
+            })
+        }
 
-const getUserById = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet implemented'
-    })
+        const user = await User.findById(req.params.id).select('-password')
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not find'
+            })
+        }
+        res.status(200).json({
+            status: 'success',
+            data: { user }
+        })
+    } catch {
+        res.status(500).json({
+            status: 'error',
+            message: err
+        })
+    }
 }
 
-const updateUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet implemented'
-    })
+const updateUser = async (req, res) => {
+try {
+        const current = "admin";
+        if (current !== 'admin') {
+            return res.status(403).json({
+                status: 'fail',
+                message: 'Accès réservé'
+            })
+        }
+
+        const updates = { ...req.body }
+        if (updates.password) {
+            updates.password = await bcrypt.hash(updates.password, 10)
+        }
+
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            updates,
+            { new: true, runValidators: true }
+        ).select('-password')
+
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not find'
+            })
+        }
+
+        res.status(200).json({
+            status: 'success',
+            data: { user }
+        });
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: err.message
+        })
+    }
+}
+
+const deleteUser = async (req, res) => {
+    try {
+        const current = "admin";
+        if (current !== 'admin') {
+            return res.status(403).json({
+                status: 'fail',
+                message: 'Accès réservé'
+            })
+        }
+
+        const user = await User.findByIdAndDelete(req.params.id)
+        if (!user) {
+            return res.status(404).json({
+                status: 'fail',
+                message: 'User not find'
+            })
+        }
+
+        res.status(204).json({
+            status: 'success',
+            message: 'User supprimé'
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: err
+        })
+    }
 }
 
 const connection = (req, res) => {
@@ -120,4 +205,4 @@ const connection = (req, res) => {
     })
 }
 
-export { getAllUsers, updateUser, signup, getUserById, connection, createUser }
+export { getAllUsers, updateUser, signup, getUserById, connection, createUser, deleteUser }
