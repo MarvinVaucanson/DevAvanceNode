@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import { User } from '../models/user.model.js'
+import jwt from 'jsonwebtoken'
 
 const signup = async (req, res) => {
     try{
@@ -42,7 +43,47 @@ const signup = async (req, res) => {
         })
     }
 }
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body
 
+        const user = await User.findOne({ email })
+        if (!user) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Email ou mot de passe incorrect'
+            })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password)
+        if (!isMatch) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'Email ou mot de passe incorrect'
+            })
+        }
+
+        const token = jwt.sign(
+            { userId: user._id, role: user.role},
+            process.env.JWT_KEY || 'bapt-secret',
+            { expiresIn: '2d' }
+        )
+
+        res.status(200).json({
+            status: 'success',
+            data: {
+                userId: user._id,
+                role: user.role,
+                token
+            }
+        })
+    } catch (err) {
+        res.status(500).json({
+            status: 'error',
+            message: err
+        })
+    }
+}
 //CRUD 
 const createUser = async (req, res) => {
     try{
@@ -127,7 +168,6 @@ const getUserById = async (req, res) => {
         })
     }
 }
-
 const updateUser = async (req, res) => {
 try {
         const current = "admin";
@@ -167,7 +207,6 @@ try {
         })
     }
 }
-
 const deleteUser = async (req, res) => {
     try {
         const current = "admin";
@@ -198,11 +237,4 @@ const deleteUser = async (req, res) => {
     }
 }
 
-const connection = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet implemented'
-    })
-}
-
-export { getAllUsers, updateUser, signup, getUserById, connection, createUser, deleteUser }
+export { getAllUsers, updateUser, signup, getUserById, login, createUser, deleteUser }
