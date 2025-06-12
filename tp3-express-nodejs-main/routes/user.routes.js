@@ -1,6 +1,7 @@
 import express from 'express'
 import { getAllUsers, updateUser, signup, getUserById, login, createUser, deleteUser } from '../controllers/user.controller.js'
 import { verifyToken } from '../middleware/verifyToken.js'
+import { checkRole } from '../middleware/checkRole.js'
 
 const userRouter = express.Router()
 
@@ -18,13 +19,13 @@ userRouter
 
 userRouter
     .route('/admin')
-    .get(verifyToken,getAllUsers)
-    .post(verifyToken,createUser)
+    .get(verifyToken,checkRole('admin'),getAllUsers)
+    .post(verifyToken,checkRole('admin'),createUser)
 
 userRouter
     .route('/admin/:id')
-    .get(verifyToken,getUserById)
-    .put(verifyToken,updateUser)
-    .delete(verifyToken,deleteUser)
+    .get(verifyToken,checkRole('admin'),getUserById)
+    .put(verifyToken,checkRole('admin'),updateUser)
+    .delete(verifyToken,checkRole('admin'),deleteUser)
 
 export { userRouter }

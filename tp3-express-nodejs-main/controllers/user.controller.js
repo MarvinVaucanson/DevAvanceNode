@@ -6,15 +6,11 @@ const signup = async (req, res) => {
     try{
         const { name, email, password, role} = req.body
 
-        //non implémenter pour le moment, il faut faire l'auth
         if (role === 'admin'){
-            console.log('passe')
-            if (!req.user || req.user.role !== 'admin') {
-                return res.status(403).json({
-                    status: 'fail',
-                    message: 'Erreur, seul un admin peut créer un admin'
-                })
-            }
+            return res.status(500).json({
+                status: 'fail',
+                message: 'Erreur, seul un admin peut créer un admin'
+            })
         }
         const hashedPassword = await bcrypt.hash(password, 10)
 
@@ -39,7 +35,7 @@ const signup = async (req, res) => {
     } catch (err){
         res.status(500).json({
             status: 'error',
-            message: err.message
+            message: err
         })
     }
 }
@@ -87,33 +83,28 @@ const login = async (req, res) => {
 //CRUD 
 const createUser = async (req, res) => {
     try{
-        //change current
-        const current = 'admin'
-        if (current === 'admin'){
+        const { name, email, password, role} = req.body
 
-            const { name, email, password, role} = req.body
+        const hashedPassword = await bcrypt.hash(password, 10)
 
-            const hashedPassword = await bcrypt.hash(password, 10)
+        const newUser = await User.create({
+            name,
+            email,
+            password: hashedPassword,
+            role
+        })
 
-            const newUser = await User.create({
-                name,
-                email,
-                password: hashedPassword,
-                role
-            })
-
-            res.status(200).json({
-                status: 'sucess',
-                data: {
-                    user:{
-                        _id: newUser._id,
-                        name: newUser.name,
-                        email: newUser.email,
-                        role: newUser.role
-                    }
+        res.status(200).json({
+            status: 'sucess',
+            data: {
+                user:{
+                    _id: newUser._id,
+                    name: newUser.name,
+                    email: newUser.email,
+                     role: newUser.role
                 }
-            })
-        }
+            }
+        })
     } catch (err){
         res.status(500).json({
             status: 'error',
@@ -124,14 +115,12 @@ const createUser = async (req, res) => {
 const getAllUsers = async (req, res) => {
     try{
         const current = "admin"
-        if (current === 'admin'){ 
-            const users = await User.find()
-            res.status(200).json({
-                status: 'success',
-                results: users.length,
-                data: { users }
-            })
-        }
+        const users = await User.find()
+        res.status(200).json({
+            status: 'success',
+            results: users.length,
+            data: { users }
+        })
     }catch(err){
         res.status(500).json({
             status: 'error',
@@ -170,36 +159,29 @@ const getUserById = async (req, res) => {
 }
 const updateUser = async (req, res) => {
 try {
-        const current = "admin";
-        if (current !== 'admin') {
-            return res.status(403).json({
-                status: 'fail',
-                message: 'Accès réservé'
-            })
-        }
 
-        const updates = { ...req.body }
-        if (updates.password) {
-            updates.password = await bcrypt.hash(updates.password, 10)
-        }
+    const updates = { ...req.body }
+    if (updates.password) {
+        updates.password = await bcrypt.hash(updates.password, 10)
+    }
 
-        const user = await User.findByIdAndUpdate(
-            req.params.id,
-            updates,
-            { new: true, runValidators: true }
-        ).select('-password')
+    const user = await User.findByIdAndUpdate(
+        req.params.id,
+        updates,
+        { new: true, runValidators: true }
+    ).select('-password')
 
-        if (!user) {
-            return res.status(404).json({
-                status: 'fail',
-                message: 'User not find'
-            })
-        }
+     if (!user) {
+        return res.status(404).json({
+            status: 'fail',
+            message: 'User not find'
+        })
+    }
 
-        res.status(200).json({
-            status: 'success',
-            data: { user }
-        });
+    res.status(200).json({
+        status: 'success',
+        data: { user }
+    })
     } catch (err) {
         res.status(500).json({
             status: 'error',
@@ -209,13 +191,6 @@ try {
 }
 const deleteUser = async (req, res) => {
     try {
-        const current = "admin";
-        if (current !== 'admin') {
-            return res.status(403).json({
-                status: 'fail',
-                message: 'Accès réservé'
-            })
-        }
 
         const user = await User.findByIdAndDelete(req.params.id)
         if (!user) {
